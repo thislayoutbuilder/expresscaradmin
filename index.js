@@ -1,17 +1,23 @@
 const express = require("express");
 const app = express();
 const port = 3000;
-const programmingLanguagesRouter = require("./routes/programmingLanguages");
+const carsRouter = require("./routes/cars");
+const cors = require("cors");
 app.use(express.json());
 app.use(
   express.urlencoded({
     extended: true,
   })
 );
+app.use(cors({
+  origin: ["http://localhost:3000"],
+  methods: ["GET", "POST"],
+  credentials: true,
+}));
 app.get("/", (req, res) => {
   res.json({ message: "ok" });
 });
-app.use("/programming-languages", programmingLanguagesRouter);
+app.use("/api/carsRouter", carsRouter);
 /* Error handler middleware */
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;

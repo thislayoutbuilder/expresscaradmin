@@ -17,12 +17,42 @@ async function getMultiple(page = 1){
   }
 }
 
-async function create(programmingLanguage){
+async function registerUser(user){
+  db.execute(
+    "INSERT INTO users (username, password) VALUES (?,?)",
+    [user.username, user.password],
+    (err, result)=> {
+      console.log(err);
+    }
+  );
+
+}
+
+async function loginUser(user) {
+  db.execute(
+    "SELECT * FROM users WHERE username = ? AND password = ?",
+    [user.username, user.password],
+    (err, result)=> {
+      console.log(err);
+      if (err) {
+          res.send({err: err});
+      }
+
+      if (result.length > 0) {
+          res.send( result);
+          }else({message: "Wrong username/password comination!"});
+      }
+  );
+}
+
+
+
+async function create(cars){
     const result = await db.query(
         `INSERT INTO programming_languages 
         (name, released_year, githut_rank, pypl_rank, tiobe_rank) 
         VALUES 
-        (${programmingLanguage.name}, ${programmingLanguage.released_year}, ${programmingLanguage.githut_rank}, ${programmingLanguage.pypl_rank}, ${programmingLanguage.tiobe_rank})`
+        (${cars.name}, ${cars.released_year}, ${cars.githut_rank}, ${cars.pypl_rank}, ${cars.tiobe_rank})`
     );
 
     let message = 'Error in creating programming language';
@@ -34,11 +64,11 @@ async function create(programmingLanguage){
     return {message};
 }
 
-async function update(id, programmingLanguage){
+async function update(id, cars){
     const result = await db.query(
         `UPDATE programming_languages 
-        SET name="${programmingLanguage.name}", released_year=${programmingLanguage.released_year}, githut_rank=${programmingLanguage.githut_rank}, 
-        pypl_rank=${programmingLanguage.pypl_rank}, tiobe_rank=${programmingLanguage.tiobe_rank} 
+        SET name="${cars.name}", released_year=${cars.released_year}, githut_rank=${cars.githut_rank}, 
+        pypl_rank=${cars.pypl_rank}, tiobe_rank=${cars.tiobe_rank} 
         WHERE id=${id}` 
     );
 
